@@ -1,7 +1,7 @@
 export interface Client {
-  cli_num: number;
-  cli_id: string;
-  cli_razsoc: string;
-  cli_dir: string;
-  cli_tel: string;
+  sequence: number;
+  id: string;
+  razon_social: string;
+  address: string;
+  phone: string;
 }

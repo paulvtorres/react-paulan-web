@@ -1,22 +1,38 @@
 import { useEffect, useState } from "react";
 import { getClients } from "../application/getClients";
 import type { Client } from "../domain/Client";
-//import { LoadingSpinner } from "@/shared/ui/LoadingSpinner";
 import { LoadingSpinner } from "../../../shared/ui/LoadingSpinner";
+import type { ApiResponse } from "../../../shared/types/ApiResponse";
+
 
 export const ClientList = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    //getClients().then(setClients);
     getClients()
-      .then(setClients)
-      .finally(() => setLoading(false));
+      .then((res: ApiResponse<Client[]>) => {
+        if (res.code === 200 && res.data) {
+          setClients(res.data);
+        } else {
+          setError(res.message || "Error inesperado");
+        }
+      })
+      .catch(() => {
+        setError("🔌 No hay conexión con el servidor.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-if (loading) {
+  if (loading) {
     return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <div className="text-red-600 text-center mt-4">{error}</div>;
   }
 
   return (
@@ -33,15 +49,15 @@ if (loading) {
           </tr>
         </thead>
         <tbody>
-           {clients.map((client) => (
-            <tr key={client.cli_num}>
-              <td className="border p-2">{client.cli_num}</td>
-              <td className="border p-2">{client.cli_id}</td>
-              <td className="border p-2">{client.cli_razsoc}</td>
-              <td className="border p-2">{client.cli_dir}</td>
-              <td className="border p-2">{client.cli_tel}</td>
+          {clients.map((client) => (
+            <tr key={client.sequence}>
+              <td className="border p-2">{client.sequence}</td>
+              <td className="border p-2">{client.id}</td>
+              <td className="border p-2">{client.razon_social}</td>
+              <td className="border p-2">{client.address}</td>
+              <td className="border p-2">{client.phone}</td>
             </tr>
-          ))} 
+          ))}
         </tbody>
       </table>
     </div>
