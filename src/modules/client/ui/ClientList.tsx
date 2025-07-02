@@ -3,12 +3,14 @@ import { getClients } from "../application/getClients";
 import type { Client } from "../domain/Client";
 import { LoadingSpinner } from "../../../shared/ui/LoadingSpinner";
 import type { ApiResponse } from "../../../shared/types/ApiResponse";
+import { ClientFormModal } from "./ClientFormModal";
 
 
 export const ClientList = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     getClients()
@@ -38,6 +40,15 @@ export const ClientList = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Client List</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Client List</h1>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded"
+          onClick={() => setShowForm(true)}
+        >
+          + Agregar Cliente
+        </button>
+      </div>
       <table className="w-full table-auto border">
         <thead>
           <tr>
@@ -60,6 +71,14 @@ export const ClientList = () => {
           ))}
         </tbody>
       </table>
+      {showForm && (
+        <ClientFormModal
+          onClose={() => setShowForm(false)}
+          onSuccess={(newClient) => {
+            setClients([...clients, newClient]);
+          }}
+        />
+      )}
     </div>
   );
 };

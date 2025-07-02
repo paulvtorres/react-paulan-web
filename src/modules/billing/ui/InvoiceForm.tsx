@@ -8,9 +8,11 @@ import { ItemModal } from "./ItemModal";
 
 interface InvoiceItem {
   sequence: number;
+  code: string;
   description: string;
   pvp: number;
   quantity: number;
+  iva: number;
   subtotal: number;
 }
 
@@ -31,14 +33,15 @@ export const InvoiceForm = () => {
     else setSelectedClient(null);
   };
 
-  const handleItemCodeChange = (index: number, code: number) => {
-    const item = items.find((itm) => itm.sequence === code);
+  const handleItemCodeChange = (index: number, code: string) => {
+    const item = items.find((itm) => itm.code === code);
     setInvoiceItems((prev) =>
       prev.map((row, i) =>
         i === index && item
           ? {
               ...row,
               sequence: item.sequence,
+              code: item.code,
               description: item.description,
               pvp: item.pvp,
               subtotal: item.pvp * row.quantity,
@@ -71,9 +74,11 @@ export const InvoiceForm = () => {
   const handleSelectItem = (index: number, item: Item) => {
     const newItem: InvoiceItem = {
       sequence: item.sequence,
+      code: item.code,
       description: item.description,
       pvp: item.pvp,
       quantity: 1,
+      iva: 14,
       subtotal: item.pvp,
     };
 
@@ -85,7 +90,9 @@ export const InvoiceForm = () => {
     setShowItemModalIndex(null);
   };
 
-  const total = invoiceItems.reduce((sum, row) => sum + row.subtotal, 0);
+  const subTotal = invoiceItems.reduce((sum, row) => sum + row.subtotal, 0);
+  const iva = invoiceItems.reduce((sum, row) => sum + row.iva, 0);
+  const total = subTotal + iva
 
   return (
     <div className="p-4">
@@ -124,6 +131,7 @@ export const InvoiceForm = () => {
             <th className="border p-2">Descripción</th>
             <th className="border p-2">PVP</th>
             <th className="border p-2">Cantidad</th>
+            <th className="border p-2">IVA</th>
             <th className="border p-2">Subtotal</th>
             <th className="border p-2">Buscar</th>
           </tr>
@@ -133,10 +141,10 @@ export const InvoiceForm = () => {
             <tr key={index}>
               <td className="border p-2">
                 <input
-                  type="number"
-                  value={row.sequence || ""}
+                  // type="string"
+                  value={row.code || ""}
                   onChange={(e) =>
-                    handleItemCodeChange(index, parseInt(e.target.value, 10))
+                    handleItemCodeChange(index, e.target.value)
                   }
                   className="w-full border"
                 />
@@ -153,6 +161,7 @@ export const InvoiceForm = () => {
                   className="w-full border"
                 />
               </td>
+              <td className="border p-2 text-right">{14}</td>
               <td className="border p-2 text-right">{row.subtotal.toFixed(2)}</td>
               <td className="border p-2 text-center">
                 <button
@@ -172,7 +181,7 @@ export const InvoiceForm = () => {
         onClick={() =>
           setInvoiceItems((prev) => [
             ...prev,
-            { sequence: 0, description: "", pvp: 0, quantity: 1, subtotal: 0 },
+            { sequence: 0, code: "", description: "", pvp: 0, quantity: 1, iva:0, subtotal: 0 },
           ])
         }
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
@@ -182,6 +191,12 @@ export const InvoiceForm = () => {
 
       <div className="mt-4 text-right font-bold text-lg">
         Total: ${total.toFixed(2)}
+      </div>  
+      <div className="mt-4 text-right font-bold text-lg">
+        SubTotal: ${subTotal.toFixed(2)}
+      </div>  
+      <div className="mt-4 text-right font-bold text-lg">
+        IVA: ${iva.toFixed(2)}
       </div>
 
       {/* Modales */}

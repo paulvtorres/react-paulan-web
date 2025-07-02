@@ -29,7 +29,7 @@ export const ItemModal = ({ onSelect, onClose }: ItemModalProps) => {
           <tbody>
             {items.map((item) => (
               <tr key={item.sequence}>
-                <td className="border p-2">{item.sequence}</td>
+                <td className="border p-2">{item.code}</td>
                 <td className="border p-2">{item.description}</td>
                 <td className="border p-2 text-right">${item.pvp.toFixed(2)}</td>
                 <td className="border p-2">
