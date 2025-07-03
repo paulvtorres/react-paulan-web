@@ -1,8 +1,8 @@
-import { API_BASE_URL } from "../../../shared/constants/config";
+import { API_BASE_URL_CLIENTS } from "../../../shared/constants/config";
 import type { Client } from "../domain/Client";
 
 export const createClient = async (data: Omit<Client, "sequence">): Promise<Client> => {
-  const res = await fetch(`${API_BASE_URL}/api/clientes`, {
+  const res = await fetch(`${API_BASE_URL_CLIENTS}/api/clients`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

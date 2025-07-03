@@ -6,6 +6,7 @@ import { createClient } from "../application/createClient";
 import { useSelector } from "react-redux";
 //import { makeSelectCatalogByType } from "@/modules/catalogSRI/store/catalogSriSelectors";
 import { makeSelectCatalogByType } from "../../../modules/catalogSRI/store/catalogSriSelectors";
+import { makeSelectClienteExistsById } from "../store/clientesSelectors";
 
 
 interface Props {
@@ -16,7 +17,7 @@ interface Props {
 export const ClientFormModal = ({ onClose, onSuccess }: Props) => {
   const [form, setForm] = useState({
     id: "",
-    tipo_id: "05",
+    id_type: "05",
     razon_social: "",
     address: "",
     phone: "",
@@ -25,18 +26,25 @@ export const ClientFormModal = ({ onClose, onSuccess }: Props) => {
 
   const tipoIdSelector = makeSelectCatalogByType("tipo_id");
   const tipoIdSri = useSelector(tipoIdSelector);
+  const clienteExisteSelector = makeSelectClienteExistsById(form.id);
+  const clienteExiste = useSelector(clienteExisteSelector);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+   
   const handleSave = async () => {
-    const isValid = validateIdentification(form.tipo_id, form.id);
+     /*const isValid = validateIdentification(form.tipo_id, form.id);
     if (!isValid) {
       setError("⚠️ El número de identificación es inválido.");
       return;
     }
+
+    if (clienteExiste) {
+      setError("❌ El número de identificación ya está registrado.");
+      return;
+    }*/
     try {
       const newClient = await createClient(form);
       onSuccess(newClient);
@@ -78,8 +86,8 @@ export const ClientFormModal = ({ onClose, onSuccess }: Props) => {
             <div className="mb-2">
               <label className="block mb-1 font-medium">Tipo de ID</label>
               <select
-                name="tipo_id"
-                value={form.tipo_id}
+                name="id_type"  // 👈 importante que coincida con la propiedad del estado `form`
+                value={form.id_type}
                 onChange={handleChange}
                 className="border px-2 py-1 w-full"
               >

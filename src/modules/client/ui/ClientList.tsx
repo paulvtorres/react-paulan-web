@@ -57,6 +57,7 @@ export const ClientList = () => {
             <th className="border p-2">Name</th>
             <th className="border p-2">Address</th>
             <th className="border p-2">Phone</th>
+            <th className="border p-2">E-mail</th>
           </tr>
         </thead>
         <tbody>
@@ -67,6 +68,7 @@ export const ClientList = () => {
               <td className="border p-2">{client.razon_social}</td>
               <td className="border p-2">{client.address}</td>
               <td className="border p-2">{client.phone}</td>
+              <td className="border p-2">{client.email}</td>
             </tr>
           ))}
         </tbody>
@@ -75,6 +77,7 @@ export const ClientList = () => {
         <ClientFormModal
           onClose={() => setShowForm(false)}
           onSuccess={(newClient) => {
+                  console.log(newClient);
             setClients([...clients, newClient]);
           }}
         />
