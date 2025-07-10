@@ -11,6 +11,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "clients/list", element: <ClientList /> },
       { path: "items", element: <div>Items (Coming Soon)</div> },
+      { path: "/ventas/nota", element: <div>Notas de Venta (Coming Soon)</div> },
       { path: "invoices", element: <InvoiceForm />  },
     ],
   },

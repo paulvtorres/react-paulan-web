@@ -17,7 +17,7 @@ interface Props {
 export const ClientFormModal = ({ onClose, onSuccess }: Props) => {
   const [form, setForm] = useState({
     id: "",
-    id_type: "05",
+    id_type: "",
     razon_social: "",
     address: "",
     phone: "",
@@ -35,7 +35,7 @@ export const ClientFormModal = ({ onClose, onSuccess }: Props) => {
   };
    
   const handleSave = async () => {
-     /*const isValid = validateIdentification(form.tipo_id, form.id);
+   /* const isValid = validateIdentification(form.id_type, form.id);
     if (!isValid) {
       setError("⚠️ El número de identificación es inválido.");
       return;
@@ -45,12 +45,17 @@ export const ClientFormModal = ({ onClose, onSuccess }: Props) => {
       setError("❌ El número de identificación ya está registrado.");
       return;
     }*/
+
     try {
-      const newClient = await createClient(form);
-      onSuccess(newClient);
+      const response = await createClient(form);
+     if (response.code === 200) {
+      onSuccess(response.data); // ✅ Solo si fue exitoso
       onClose();
-    } catch (e) {
-      setError("❌ Error al guardar el cliente.");
+    } else {
+      setError(`❌ ${response.message}`);
+    }
+  } catch (e) {
+    setError("❌ Error al guardar el cliente.");
     }
   };
 
